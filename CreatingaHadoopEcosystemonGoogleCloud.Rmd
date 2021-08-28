@@ -1,0 +1,110 @@
+---
+title: "Creating a Hadoop Ecosystem on Google Cloud"
+author: "Natália Faraj Murad"
+date: "27/08/2021"
+output: html_document
+---
+
+### Creating a Budget Notification
+
+*Budgets & Notifications -> Create Budget
+Name of Project*
+
+Projects - Select
+
+[Services you want to be notified]
+
+*Create budget - Value -* [Percentages of Progress you want to be alerted]
+
+### Enable APIs
+
+When you use a service, the first step is to activate the API of this service.
+
+*Menu -> Computer Engine -> VM Instance -> Activate API*
+
+*VM Instance -> Create Instance*
+
+[Name; Region; Zone]
+
+[Machine type E2 configuration]
+
+[OS image; Version; storage]
+
+*Service account* - says which services the machine can access
+
+**Good practice:** Create a new service account only with the services you will use.
+
+*Firewall:* [ports].
+
+SSH; local host name;
+
+**CREATE**
+
+It gives an internal and external IP.
+
+You can access the machine by SSH, Cloud Shell;
+
+```{bash, eval = FALSE}
+gcloud compute instances list
+gcloud compute ssh machine_name --zone-us-central1-a
+```
+
+### Dataproc
+
+### Create a Dataproc Cluster (Console & SDK)
+
+*Menu -> Big Data -> Dataproc*
+
+* Activate Dataproc API
+
+Clusters; Jobs; Workflows; AutoScaling Police (cluster increases power in acord with a threshold); Components; MetaStore (metadata); Notebooks (Jupyter).
+
+* Create bucket (places you can put data, when you execute a code, you point to this bucket)- Cloud Storage
+
+-  Create range - Type of local - options of storage - Access Control - Cryptography
+
+* Create Cluster
+
+  * Custer_name
+  * Master and Workers
+  * Autoscaling
+  * Hadoop Versions
+  * Components - Gateway - Web interfaces - activate components gateway - google will generate a link to the interface.
+  * Components - you can include additional components - Jupyter Notebook; Zeppelin Notebook; Zoekeeper.
+  
+* Machine type
+
+  * Machine Type
+  * Storage
+  * Number of Workers
+  * Secondary Nodes - processing nodes (does not contain data)
+  
+* Personalize Cluster
+
+  * Only intern IP
+  * Metastore
+  * Cluster Property - you can change Hadoop settings
+  * Inicialization Actions - script when you start the cluster
+  * Program exclusion of the Cluster
+  * Bucket of Cloud Storage preparation - bucket dataproc puts configuration files and etc.
+
+It created a bucket for specific information of the cluster - *Bucket of Cloud Storage Preparation* (click to access).
+
+*Open cluster - Monitoring Screen - Jobs*, VM, Web Interface (component gateway)
+
+Compute Engine - you can access virtual machines.
+
+*Menu -> Dataproc -> Send job -> ID, Name, Type, Class (org.apache.spark.examples.SparkPi), jar files (file://usr/lib/spark/examples/jars/spark-example.jar), arguments(1000) - SEND*
+
+It can be also executed by ssh or Cloud-shell
+
+### Running a Workload
+
+* Open Cloud Shell in GCP
+* Clone repository with the files that will be used in the workload
+* Create bucket - it was already created - gsutil ls
+* Set script with the right name of the bucket and directory/file locations
+* Upload files in the bucket - *gsutil cp scrip.py inputfile.txt gs://bucket_name*
+* Execute script - *Cluster -> Jobs -> Send Job -> [Job Name][Cluster Name][Job Type - PySpark][File - gs://bucket_name/script.py] -> SEND*
+
+It will create a folder with the results inside the Bucket.The folder contains a file with the log of the job and a file with the result.
